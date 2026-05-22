@@ -1,5 +1,7 @@
 import { use, useState } from 'react'
 
+import TodoItem  from './components/TodoItem'
+
 
 import './App.css'
 
@@ -11,31 +13,82 @@ function App() {
 
   function addTodo() {
 
-    setTodos([...todos , text])
+    if (text.trim() === '') return;
+
+    const newTodo = {
+
+      id: Date.now(),
+
+      title: text.trim(),
+
+      completed: false, 
+
+    }
+
+    setTodos([...todos , newTodo])
 
     setText('')
 
   }
 
 
+  function toggleTodo(targetId) {
+    
+    const updatedTodos = todos.map(todo => {
+
+      if (todo.id === targetId) {
+
+        return { ...todo , completed: !todo.completed}
+
+      }
+
+      return todo
+
+    })
+
+    setTodos(updatedTodos)
+  
+
+  }
+
+
+  function deleteTodo(id) {
+
+    const filtredTodos = todos.filter(todo => todo.id != id)
+
+    setTodos(filtredTodos)
+
+  }
+
+
   return (
 
-    <div>
+    <div className='todo__app'>
 
-      <h1>ToDo List</h1>
+      <div className="todo__container">
 
-      <input value={text} onChange={(e) => setText(e.target.value)} />
+        <h1 className='todo__title'>To Do List</h1>
+
+        <div className='todo__actions'> 
+
+          <input className='todo__input' value={text} onChange={(e) => setText(e.target.value)} placeholder='New task title'/>
+
+          <button className={`todo__button ${text.trim() ? 'todo__button--active' : ''}`} onClick={addTodo}>Add</button>
+
+        </div>
+        
 
 
-      <ul>
-        {todos.map((todo) => (
-          <li>{todo}</li>
-        ))}
-      </ul>
+        <ul className='todo__list'>
+          {todos.map((todo) => (
+            <TodoItem key={todo.id} todo={todo} onDelete={deleteTodo} onToggle = {toggleTodo}/>
+          ))}
+        </ul>
 
 
 
-      <button onClick={addTodo}>Добавить</button>
+        
+      </div>
 
     </div>
 
