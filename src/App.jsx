@@ -1,7 +1,6 @@
-import { use, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import TodoItem  from './components/TodoItem'
-
 
 import './App.css'
 
@@ -9,7 +8,29 @@ function App() {
 
   const [text, setText] = useState('')
 
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState(() => {
+    
+    const savedTodos = localStorage.getItem('my_todos')
+    
+    if (savedTodos) {
+      return JSON.parse(savedTodos)
+    }
+      return []
+    
+
+  })
+
+    
+
+
+
+
+  useEffect(() => {
+
+    localStorage.setItem('my_todos' , JSON.stringify(todos));
+    console.log('Список задач обновился! Я сохранил его в LocalStorage')
+
+  } , [todos])
 
   function addTodo() {
 
